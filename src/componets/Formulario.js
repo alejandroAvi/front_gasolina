@@ -1,16 +1,22 @@
 import React from 'react';
 import { getPrice } from '../contantes/api';
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
  
 function Formulario({setData}) {
-    const {register, handleSubmit, errors } = useForm();
+    const {register, handleSubmit } = useForm();
     const onSubmit = ({municipio,estado,ordenar}) => {   
         getPrice(municipio,estado,ordenar)
-          .then(response => {
-            console.log(response);
-            setData(response.results);
-          }).catch(error => {
-            console.log(error);
+            .then(response => {
+              console.log(response);
+                if(response.success){
+                    setData(response.results);
+                }else{
+                    Swal.fire('Error','No se encontraron resultados','error');
+                    setData([]);
+                }
+            }).catch(error => {
+            Swal.fire('Error',error.message,'error');
         })
     }; 
 
